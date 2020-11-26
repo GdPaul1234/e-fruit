@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Fruit</title>
+    <!-- Load Vue followed by Vue Router -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/http-vue-loader/src/httpVueLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-router/dist/vue-router.js"></script>
+    <!-- Load axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Load gsap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.4/gsap.min.js"></script>
+    <!-- Load stylesheet -->
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/form.css" />
+    <link rel="stylesheet" href="styles/search.css" />
+  </head>
+  <body>
+    <div class="bg-image"></div>
+
+    <div id="app">
+      <header>
+        <h1>E-Fruit</h1>
+      </header>
+
+      <main>
+        <router-view
+          :articles="articles"
+          :article="articleBalance"
+          @get-correction="getCorrection"
+          @add-article="addArticle"
+          @delete-article="deleteArticle"
+          @update-article="updateArticle"
+          :rsuccess="registerSuccess"
+          :rerror="registerError"
+          :rerror_reason="registerErrorReason"
+          @register-user="registerUser"
+          :lsuccess="loginSuccess"
+          :lerror="loginError"
+          :lerror_reason="loginErrorReason"
+          @login-user="loginUser"
+        ></router-view>
+      </main>
+    </div>
+    <script src="/vue-application.js"></script>
+  </body>
+</html>
