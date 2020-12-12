@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require('fs')
 const router = express.Router();
 var articles = [];
 
@@ -349,6 +350,23 @@ router.get("/me", async function (req, res) {
   const email = result.rows[0]["email"];
   const admin = result.rows[0]["admin"] ? true : false;
   res.json({ message: email, admin: admin });
+});
+
+/* ===========================================================================
+   ============================== GESTION IMAGE  =============================
+   =========================================================================== */
+router.post("/classify", async (req, res) => {
+  const imageBase64 = req.body.imageBase64;
+  const now = Number(Date.now()).toString();
+  const fileName = `temp/image_${now}.png`;
+
+  // sauver image dans un fichier png pour Matlab
+  fs.writeFileSync(fileName,imageBase64, {encoding: 'base64'});
+  console.log(`${fileName} saved!`);
+
+  // classifier image
+
+  res.json({ message: "File saved!" });
 });
 
 module.exports = router;

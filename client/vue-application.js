@@ -1,21 +1,27 @@
 const Home = window.httpVueLoader("./components/Home.vue");
+const AdminSettings = window.httpVueLoader("./components/admin/AdminSettings.vue");
 const Register = window.httpVueLoader("./components/user/Register.vue");
-const Login = window.httpVueLoader("./components/user/Login.vue");
+//const Login = window.httpVueLoader("./components/user/Login.vue");
 const ArticleEdit = window.httpVueLoader("./components/admin/ArticleEdit.vue");
-const ArticleDetail = window.httpVueLoader("./components/card/ArticleDetail.vue");
+const ArticleDetail = window.httpVueLoader(
+  "./components/card/ArticleDetail.vue"
+);
 const Account = window.httpVueLoader("./components/user/Account.vue");
-const ArticleCommandeTable = window.httpVueLoader("./components/admin/AllCommandeTable.vue");
-const AllArticles = window.httpVueLoader("./components/AllArticles.vue")
+const ArticleCommandeTable = window.httpVueLoader(
+  "./components/admin/AllCommandeTable.vue"
+);
+const AllArticles = window.httpVueLoader("./components/AllArticles.vue");
 
 const routes = [
   { path: "/", component: Home },
+  { path: "/settings", component: AdminSettings },
   { path: "/register", component: Register },
-  { path: "/login", component: Login },
+  //{ path: "/login", component: Login },
   { path: "/edit", component: ArticleEdit },
   { path: "/p/:id", component: ArticleDetail },
   { path: "/account", component: Account },
   { path: "/orders", component: ArticleCommandeTable },
-  { path: "/correct_suggestion",component: AllArticles }
+  { path: "/correct_suggestion", component: AllArticles },
 ];
 
 const router = new VueRouter({
@@ -30,12 +36,13 @@ var app = new Vue({
 
     articleBalance: {
       id: 5,
-      nom: "Pomme",
+      nom: "Fraise",
       description:
         "Petit fruit très parfumé, de forme conique, dont les akènes forment \
           des aspérités sur la chair rouge vif, qui mûrit en été sur une \
           plante à tige très basse.",
-          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Fraises_2_Luc_Viatour.jpg/781px-Fraises_2_Luc_Viatour.jpg",
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Fraises_2_Luc_Viatour.jpg/781px-Fraises_2_Luc_Viatour.jpg",
       prix: 3,
     },
 
@@ -49,11 +56,15 @@ var app = new Vue({
 
     connectedUser: "",
     isAdmin: false,
+
+    // stream du flux video de la camera
+    stream: null,
+    pictureBase64: "",
   },
   async mounted() {
     const res = await axios.get("/api/articles");
     this.articles = res.data;
-    
+
     // savoir si l'utilisateur est déjà connecté
     try {
       const res3 = await axios.get("/api/me");
@@ -62,28 +73,30 @@ var app = new Vue({
     } catch (error) {
       this.connectedUser = "";
     }
+
+    // capturer photos des fruits toutes les 1 sec
+    window.setInterval(this.takepicture, 1000);
   },
   methods: {
-/*
+    /*
     ===============================================================
     GESTION BALANCE
     ===============================================================
     */
-   getCorrection(articleId) {
-    console.log('get ' + articleId);
-    var article = this.articles.find((a) => a.id === articleId);
-    
-    this.articleBalance ={
-      id: article.id,
-      nom: article.name,
-      description: article.description,
-      image: article.image,
-      prix: article.price,
-    }
+    getCorrection(articleId) {
+      console.log("get " + articleId);
+      var article = this.articles.find((a) => a.id === articleId);
 
-    console.log(this.articleBalance.nom);
-   },
+      this.articleBalance = {
+        id: article.id,
+        nom: article.name,
+        description: article.description,
+        image: article.image,
+        prix: article.price,
+      };
 
+      console.log(this.articleBalance.nom);
+    },
 
     /*
     ===============================================================
@@ -136,7 +149,7 @@ var app = new Vue({
       this.connectedUser = "";
 
       location.href = "/#/";
-      location.reload;
+      location.reload();
     },
 
     /*
@@ -162,6 +175,66 @@ var app = new Vue({
       await axios.delete("/api/article/" + articleId);
       const index = this.articles.findIndex((a) => a.id === articleId);
       this.articles.splice(index, 1);
+    },
+
+    /*
+    ===============================================================
+    GESTION CAMERA
+    ===============================================================
+    */
+
+    /* activer aperçu caméra
+    https://www.kirupa.com/html5/accessing_your_webcam_in_html5.htm
+    https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+    https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos */
+    async getCameraPreview() {
+      let stream = null;
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        console.log(stream);
+        // use the stream
+        this.stream = stream;
+      } catch (err) {
+        // handle the error
+        console.log("An error occurred: " + err);
+      }
+    },
+
+    /* Capturer image du flux video et l'encoder en base64
+     https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
+     https://x-team.com/blog/webcam-capture-vue/ */
+    takepicture() {
+      // obtenir piste vidéo...
+      var tracks = null;
+      if (this.stream) {
+        tracks = this.stream.getVideoTracks();
+      }
+
+      // définir propriétés du canvas
+      var canvas = this.$refs.canvas;
+      var context = canvas.getContext("2d");
+
+      if (tracks) {
+        var videoTrack = tracks[0];
+        // obtenir taille vidéo
+        var videoTrackSettings = videoTrack.getSettings();
+        var height = videoTrackSettings.height;
+        var width = videoTrackSettings.width;
+
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(this.$refs.video, 0, 0, width, height);
+
+        var data = canvas.toDataURL("image/png");
+        this.pictureBase64 = data;
+        console.log(data.slice(0,30));
+      } else {
+        context.fillStyle = "#AAA";
+        context.fillRect(0, 0, 640, 480);
+        var data = canvas.toDataURL("image/png");
+        this.pictureBase64 = data;
+      }
     },
   },
 });

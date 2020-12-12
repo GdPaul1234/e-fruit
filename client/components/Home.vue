@@ -1,49 +1,63 @@
 <template>
-  <div class="grid-container">
-    <article class="article-balance">
-      <div
-        class="image"
-        :style="`background-image: url(${article.image}) ;`"
-      ></div>
-      <div class="information">
-        <h1 class="nom">{{ article.nom }}</h1>
-        <div class="description">
-          <h3>{{ article.prix }} € le kilo</h3>
-          <p>{{ article.description }}</p>
-        </div>
-      </div>
-
-      <div class="balance">
-        <div class="prix">
-          <animated-number :value="prixBalance"></animated-number> €
-        </div>
-        <div class="poids">
-          <animated-number :value="poids"></animated-number> kg
-        </div>
-      </div>
-    </article>
-
-    <article class="correction">
-      <h3>Une erreur de reconaissance du fruit sur la balance ?</h3>
-        <div class="correction-articles">
-          <correction-card :articles="articles"></correction-card>
-          <button class="bouton-search" @click="goToAllArticles()">Rechercher</button>
-        </div>
-    </article>
-
-    <div class="recettes">
-      <h3>Des recettes qui peuvent vous intéresser</h3>
-      <recipe-card :fruit="article.nom"></recipe-card>
+  <div>
+    <!-- Bouton pour accéder à l'accueil administrateur -->
+    <div class="admin-button">
+      <a href="/#/settings">Espace collaborateur</a>
     </div>
 
-    <div class="consigne">instruction client</div>
+    <!-- Interface balance -->
+    <div class="grid-container">
+      <article class="article-balance">
+        <div
+          class="image"
+          :style="`background-image: url(${article.image}) ;`"
+        ></div>
+        <div class="information">
+          <h1 class="nom">{{ article.nom }}</h1>
+          <div class="description">
+            <h3>{{ article.prix }} € le kilo</h3>
+            <p>{{ article.description }}</p>
+          </div>
+        </div>
+
+        <div class="balance">
+          <div class="prix">
+            <animated-number :value="prixBalance"></animated-number> €
+          </div>
+          <div class="poids">
+            <animated-number :value="poids"></animated-number> kg
+          </div>
+        </div>
+      </article>
+
+      <article class="correction">
+        <h3>Une erreur de reconaissance du fruit sur la balance ?</h3>
+        <div class="correction-articles">
+          <correction-card :articles="articles"></correction-card>
+          <button class="bouton-search" @click="goToAllArticles()">
+            Rechercher
+          </button>
+        </div>
+      </article>
+
+      <div class="recettes">
+        <h3>Des recettes qui peuvent vous intéresser</h3>
+        <recipe-card :fruit="article.nom"></recipe-card>
+      </div>
+
+      <div class="consigne">instruction client</div>
+    </div>
   </div>
 </template>
 
 <script>
-const CorrectionCard = window.httpVueLoader("./components/card/CorrectionCard.vue");
+const CorrectionCard = window.httpVueLoader(
+  "./components/card/CorrectionCard.vue"
+);
 const RecipeCard = window.httpVueLoader("./components/card/RecipeCard.vue");
-const AnimatedNumber = window.httpVueLoader("./components/card/AnimatedNumber.vue");
+const AnimatedNumber = window.httpVueLoader(
+  "./components/card/AnimatedNumber.vue"
+);
 
 module.exports = {
   components: {
@@ -68,13 +82,37 @@ module.exports = {
   methods: {
     goToAllArticles() {
       // changer l'URL de la page courante
-      this.$router.push({ path: '/correct_suggestion' });
-    }
+      this.$router.push({ path: "/correct_suggestion" });
+    },
   },
 };
 </script>
 
 <style scoped>
+.admin-button {
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  /* faire ressembler la div à un bouton */
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: rgb(241, 241, 241);
+  z-index: 1000;
+
+  /* décaler le bouton admin vers la droite pour le cacher */
+  transform: translateX(160px);
+  overflow: hidden;
+
+  transition: all 0.5s ease-out;
+}
+
+.admin-button:hover {
+  /* remettre le bouton à sa place pour le rendre plus visible */
+  transform: translateX(0px);
+  transition: all 0.5s ease-out;
+}
+
 /* VISUEL https://grid.layoutit.com?id=fery2E3 */
 .grid-container {
   display: grid;
@@ -175,7 +213,6 @@ module.exports = {
   grid-area: recettes;
   overflow: hidden;
 }
-
 
 .consigne {
   grid-area: consigne;

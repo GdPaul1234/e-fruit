@@ -14,8 +14,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.4/gsap.min.js"></script>
     <!-- Load stylesheet -->
     <link rel="stylesheet" href="styles/style.css" />
-    <link rel="stylesheet" href="styles/form.css" />
+    <!---<link rel="stylesheet" href="styles/form.css" />-->
     <link rel="stylesheet" href="styles/search.css" />
+
+    <style>
+      #shadow-video,
+      #shadow-canvas {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <div class="bg-image"></div>
@@ -26,6 +33,21 @@
       </header>
 
       <main>
+        <!-- Tag video permettant de récupérer les images du stream  -->
+        <video
+          autoplay="true"
+          ref="video"
+          id="shadow-video"
+          :src-object.prop.camel="stream"
+        ></video>
+        <!-- Tag canvas permettant d'encoder les images en base64  -->
+        <canvas
+          ref="canvas"
+          id="shadow-canvas"
+          width="640"
+          height="480"
+        ></canvas>
+
         <router-view
           :articles="articles"
           :article="articleBalance"
@@ -41,6 +63,9 @@
           :lerror="loginError"
           :lerror_reason="loginErrorReason"
           @login-user="loginUser"
+          :is-admin="isAdmin"
+          @get-camera-preview="getCameraPreview"
+          :stream="stream"
         ></router-view>
       </main>
     </div>
