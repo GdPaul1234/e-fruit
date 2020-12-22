@@ -1,5 +1,5 @@
 const express = require("express");
-const fs = require('fs')
+const fs = require("fs");
 const router = express.Router();
 var articles = [];
 
@@ -47,10 +47,10 @@ router.get("/articles", async (req, res) => {
 });
 
 /* ===========================================================================
-   ============================= GESTION COMMANDES ===========================
+   =============================== GESTION PESEES ============================
    =========================================================================== */
 
-router.get("/orders", async (req, res) => {
+router.get("/pesees", async (req, res) => {
   // Si utilisateur pas authentifié, pas de commande
   const id = req.session.userId;
 
@@ -59,28 +59,18 @@ router.get("/orders", async (req, res) => {
     return;
   }
 
-  // Verifier si user est un admin, si oui, accès à toutes les commandes
-  const sql = "SELECT admin FROM users WHERE id=$1";
-  const result = await client.query({
-    text: sql,
-    values: [id],
-  });
+  // Verifier si user est un admin, si oui, accès à toutes les pesees
+  if (req.session.admin) {
+    const sql = "SELECT * FROM pesees\nORDER BY id ASC";
+    const result = await client.query({
+      text: sql,
+    });
 
-  const admin = result.rows[0].admin;
-
-  const sql2 = "SELECT * FROM commandes\nORDER BY id ASC";
-  const result2 = await client.query({
-    text: sql2,
-  });
-
-  var commandes = result2.rows;
-
-  // Si user n'est pas admin, retourner que ses commandes
-  if (!admin) {
-    commandes = commandes.filter((commande) => commande.user_id === id);
+    var pesees = result.rows;
+    res.json({ pesees });
+  } else {
+    res.status(403).json({ message: "forbidden" });
   }
-
-  res.json({ commandes });
 });
 
 /* ===========================================================================
@@ -233,9 +223,9 @@ router.get("/all_users", async function (req, res) {
       text: sql,
     });
 
-    var users
+    var users;
 
-    res.json({ users: result.rows })
+    res.json({ users: result.rows });
   } else {
     res.status(403).json({ message: "forbidden" });
   }
@@ -304,12 +294,10 @@ router.post("/login", async function (req, res) {
     // vérifier si l'utilisateur ne sait pas connecté
     if (req.session.userId === id) {
       // à modifier si necessaire
-      res
-        .status(401)
-        .json({
-          message: `${result.rows[0]["email"]} already connected!`,
-          admin: admin,
-        });
+      res.status(401).json({
+        message: `${result.rows[0]["email"]} already connected!`,
+        admin: admin,
+      });
       return;
     } else {
       req.session.userId = result.rows[0]["id"];
@@ -358,10 +346,10 @@ router.get("/me", async function (req, res) {
 router.post("/classify", async (req, res) => {
   const imageBase64 = req.body.imageBase64;
   const now = Number(Date.now()).toString();
-  const fileName = `temp/image_${now}.png`;
+  const fileName = `matlab/images/image_${now}.jpg`;
 
-  // sauver image dans un fichier png pour Matlab
-  fs.writeFileSync(fileName,imageBase64, {encoding: 'base64'});
+  // sauver image dans un fichier jpg pour Matlab
+  fs.writeFileSync(fileName, imageBase64, { encoding: "base64" });
   console.log(`${fileName} saved!`);
 
   // classifier image

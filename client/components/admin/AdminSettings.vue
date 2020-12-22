@@ -80,7 +80,7 @@ module.exports = {
 
       // Si l'utilisateur est un admin, le rediriger vers la page d'administration
       if(this.isAdmin) {
-        this.$router.push({ path: "/correct_suggestion" }); // pour l'instant, je met un chemin bidon !
+        this.$router.push({ path: "/edit" }); // pour l'instant, je met un chemin bidon !
       }
     },
 

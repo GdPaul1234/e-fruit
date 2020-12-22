@@ -30,6 +30,11 @@
     <div id="app">
       <header>
         <h1>E-Fruit</h1>
+        <!-- Navigation bar -->
+        <nav v-if="isAdmin">
+          <router-link to="/edit">Gestion articles</router-link>
+          <router-link to="/pesees">Historique pesées</router-link>
+        </nav>
       </header>
 
       <main>

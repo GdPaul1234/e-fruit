@@ -3,13 +3,9 @@ const AdminSettings = window.httpVueLoader("./components/admin/AdminSettings.vue
 const Register = window.httpVueLoader("./components/user/Register.vue");
 //const Login = window.httpVueLoader("./components/user/Login.vue");
 const ArticleEdit = window.httpVueLoader("./components/admin/ArticleEdit.vue");
-const ArticleDetail = window.httpVueLoader(
-  "./components/card/ArticleDetail.vue"
-);
+const ArticleDetail = window.httpVueLoader("./components/card/ArticleDetail.vue");
 const Account = window.httpVueLoader("./components/user/Account.vue");
-const ArticleCommandeTable = window.httpVueLoader(
-  "./components/admin/AllCommandeTable.vue"
-);
+const PeseeTable = window.httpVueLoader( "./components/admin/PeseeTable.vue");
 const AllArticles = window.httpVueLoader("./components/AllArticles.vue");
 
 const routes = [
@@ -20,7 +16,7 @@ const routes = [
   { path: "/edit", component: ArticleEdit },
   { path: "/p/:id", component: ArticleDetail },
   { path: "/account", component: Account },
-  { path: "/orders", component: ArticleCommandeTable },
+  { path: "/pesees", component: PeseeTable },
   { path: "/correct_suggestion", component: AllArticles },
 ];
 
@@ -226,13 +222,13 @@ var app = new Vue({
         canvas.height = height;
         context.drawImage(this.$refs.video, 0, 0, width, height);
 
-        var data = canvas.toDataURL("image/png");
+        var data = canvas.toDataURL("image/jpeg");
         this.pictureBase64 = data;
         console.log(data.slice(0,30));
       } else {
         context.fillStyle = "#AAA";
         context.fillRect(0, 0, 640, 480);
-        var data = canvas.toDataURL("image/png");
+        var data = canvas.toDataURL("image/jpeg");
         this.pictureBase64 = data;
       }
     },
