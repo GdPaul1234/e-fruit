@@ -1,6 +1,7 @@
 const Home = window.httpVueLoader("./components/Home.vue");
 const AdminSettings = window.httpVueLoader("./components/admin/AdminSettings.vue");
-const Register = window.httpVueLoader("./components/user/Register.vue");
+const UserEditTable = window.httpVueLoader("./components/admin/UserEditTable.vue");
+//const Register = window.httpVueLoader("./components/user/Register.vue");
 //const Login = window.httpVueLoader("./components/user/Login.vue");
 const ArticleEdit = window.httpVueLoader("./components/admin/ArticleEdit.vue");
 const ArticleDetail = window.httpVueLoader("./components/card/ArticleDetail.vue");
@@ -11,7 +12,8 @@ const AllArticles = window.httpVueLoader("./components/AllArticles.vue");
 const routes = [
   { path: "/", component: Home },
   { path: "/settings", component: AdminSettings },
-  { path: "/register", component: Register },
+  { path: "/users", component: UserEditTable },
+  //{ path: "/register", component: Register },
   //{ path: "/login", component: Login },
   { path: "/edit", component: ArticleEdit },
   { path: "/p/:id", component: ArticleDetail },
@@ -113,6 +115,13 @@ var app = new Vue({
 
       this.registerSuccess = true;
       this.registerError = false;
+
+      window.setTimeout(this.resetRegister, 1000);
+    },
+
+    resetRegister() {
+      this.registerSuccess = false;
+      this.registerError = false;
     },
 
     // Gestion login
@@ -143,9 +152,9 @@ var app = new Vue({
       }
 
       this.connectedUser = "";
-
-      location.href = "/#/";
-      location.reload();
+      this.loginSuccess = false;
+      this.loginError = false;
+      this.isAdmin = false;
     },
 
     /*

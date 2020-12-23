@@ -35,7 +35,7 @@
       </fieldset>
     </div>
 
-    <fieldset>
+    <fieldset v-if="connectedUser === ''">
       <legend>Connexion</legend>
       <login
         :lsuccess="lsuccess"
@@ -45,20 +45,31 @@
         @login-user="loginUser"
       ></login>
     </fieldset>
+    <account v-else
+      :connected-user="connectedUser"
+      :is-admin="isAdmin"
+      @logout-user="logoutUser"
+    >
+    </account>
   </div>
 </template>
 
 <script>
 const Login = window.httpVueLoader("./components/user/Login.vue");
+const Account = window.httpVueLoader("./components/user/Account.vue");
 
 module.exports = {
   components: {
     Login,
+    Account
   },
   props: {
+    connectedUser: { type: String },
+
     lsuccess: { type: Boolean, default: false },
     lerror: { type: Boolean, default: false },
     lerror_reason: { type: String },
+
     isAdmin: { type: Boolean, default: false },
     stream: {},
   },
@@ -79,9 +90,13 @@ module.exports = {
       await this.$emit("login-user", user);
 
       // Si l'utilisateur est un admin, le rediriger vers la page d'administration
-      if(this.isAdmin) {
+      if (this.isAdmin) {
         this.$router.push({ path: "/edit" }); // pour l'instant, je met un chemin bidon !
       }
+    },
+
+    logoutUser() {
+      this.$emit("logout-user");
     },
 
     /* Demander à vue-application de récupérer le flux video */
@@ -108,7 +123,6 @@ module.exports = {
         this.videoTrack.label = "Aucune information disponible";
       }
     },
-
   },
 };
 </script>
@@ -130,7 +144,7 @@ fieldset {
   margin: 0;
 }
 
-.article h3 {
+.article .info h3 {
   border-bottom: medium dotted black;
   margin: 0.5em 0;
 }

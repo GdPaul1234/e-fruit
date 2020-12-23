@@ -218,7 +218,7 @@ router
  */
 router.get("/all_users", async function (req, res) {
   if (req.session.admin) {
-    const sql = "SELECT id,email FROM users";
+    const sql = "SELECT id,email,admin FROM users\nORDER BY id ASC";
     const result = await client.query({
       text: sql,
     });

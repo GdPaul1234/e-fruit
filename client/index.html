@@ -29,11 +29,13 @@
 
     <div id="app">
       <header>
-        <h1>E-Fruit</h1>
+        <h1 :class="{ 'no-bottom-padding': isAdmin } ">E-Fruit</h1>
         <!-- Navigation bar -->
         <nav v-if="isAdmin">
           <router-link to="/edit">Gestion articles</router-link>
           <router-link to="/pesees">Historique pesées</router-link>
+          <router-link to="/users">Gestion utilisateurs</router-link>
+          <router-link to="/account">Deconnexion</router-link>
         </nav>
       </header>
 
@@ -68,6 +70,8 @@
           :lerror="loginError"
           :lerror_reason="loginErrorReason"
           @login-user="loginUser"
+          :connected-user="connectedUser"
+          @logout-user="logoutUser"
           :is-admin="isAdmin"
           @get-camera-preview="getCameraPreview"
           :stream="stream"
