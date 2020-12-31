@@ -3,7 +3,7 @@ function [result] = classifyImage(image)
 %   Detailed explanation goes here
 
 % chargement CNN
-persistent mynet;
+global mynet;
 if isempty(mynet)
     disp("Chargement CNN dans classifyImage...");
     mynet = coder.loadDeepLearningNetwork('fruitnet.mat', 'netTransfer');

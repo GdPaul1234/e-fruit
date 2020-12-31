@@ -4,12 +4,16 @@ if isempty(mynet)
     mynet = coder.loadDeepLearningNetwork('fruitnet.mat', 'netTransfer');
 end
 
-while true
+% Création fichier started pour dire que le programme est démarré
+fStart = fopen("started.status", 'w');
+fclose(fStart);
+
+while not(isfile("stop.command"))
     fprintf("En attente... %s\n",datestr(now));
     pause(0.5);
     
     % Création répertoire images si inexistant
-    [status, msg] = mkdir('images'); 
+    [status, msg] = mkdir('images');
     if not(status)
         disp(msg);
         return;
@@ -34,10 +38,10 @@ while true
                 % supprimer l'image car elle ne sert plus à rien
                 delete(fullfilename)
                 
-                % revenir à l'ancien répertoire et création du répertoire 
+                % revenir à l'ancien répertoire et création du répertoire
                 % result si inexistant
-                cd(oldFolder);
-                [status, msg] = mkdir('result'); 
+                %cd(oldFolder);
+                [status, msg] = mkdir('result');
                 if not(status)
                     disp(msg);
                     return;
@@ -50,9 +54,16 @@ while true
                 fid = fopen(resultFullfilename, 'w');
                 fprintf(fid,"%s",result);
                 fclose(fid);
-   
+                
             end
         end
     end
+end
 
+% Le programme s'est arrêté
+fprintf("Arrêt de l'analyse");
+delete("started.status");
+% nettoyer résultats
+if isfolder("result")
+    rmdir("result", 's');
 end
