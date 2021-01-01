@@ -1,6 +1,6 @@
 <template>
   <div class="article-container">
-    <article class="article" v-for="article in articles" :key="article.id">
+    <article class="article" v-for="article in articlesSuggestion" :key="article.id">
       <img :src="article.image" />
 
       <div>
@@ -9,7 +9,7 @@
         </a>
 
         <div class="price">
-          {{ article.price }} €
+          <strong>{{ article.price }} €</strong> - ({{ Number.parseFloat(article.score * 100).toFixed(0) }} %)
         </div>
       </div>
     </article>
@@ -20,10 +20,37 @@
 module.exports = {
   props: {
     articles: { type: Array, default: [] },
+    suggestions: { type: Array, default: [] },
+  },
+  watch: {
+    suggestions: {
+      immediate: true,
+      deep: true,
+      handler: 'getDetailledSuggestions'
+    }
   },
   data() {
-    return {};
+    return {
+      articlesSuggestion: [],
+    };
   },
+  methods: {
+    getDetailledSuggestions(data) {
+      this.articlesSuggestion = [];
+      console.log(data);
+
+      for (let index = 1; index < data.length; index++) {
+        const item = data[index];
+        console.log('item',item.categorie);
+        
+        var suggestion = this.articles.find((a) =>
+            a.name.toUpperCase().includes(item.categorie.toUpperCase())
+          );
+        suggestion.score = item.score;
+        this.articlesSuggestion.push(suggestion);
+      }
+    }
+  }
 };
 </script>
 
@@ -32,6 +59,10 @@ module.exports = {
 .article-container {
   display: flex;
   overflow: auto;
+}
+
+.article {
+  width: 150px;
 }
 
 article .title {
@@ -53,7 +84,6 @@ article .title:hover {
 
 article .price {
   font-size: 16px;
-  font-weight: 700;
 }
 
 img {

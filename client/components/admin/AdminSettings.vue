@@ -31,6 +31,30 @@
           <p>Not available :(</p>
 
           <h3>Connectivité</h3>
+          <details v-if="suggestions.length != 0">
+            <summary>
+              <strong>{{
+                suggestions[0].categorie || suggestions[0].message
+              }}</strong>
+            </summary>
+            <ul v-if="suggestions[0] && suggestions[0].categorie">
+              <li v-for="(suggestion, index) in suggestions" :key="index">
+                <span>
+                  {{ suggestion.categorie }}
+                </span>
+
+                <span
+                  class="score"
+                  :style="{ width: suggestion.score * 250 + 'px' }"
+                >
+                  {{ Number.parseFloat(suggestion.score * 100).toFixed(0) }}
+                  %
+                </span>
+              </li>
+            </ul>
+          </details>
+
+          <p v-else>Démarrer la transmission vidéo !</p>
         </div>
       </fieldset>
     </div>
@@ -45,7 +69,8 @@
         @login-user="loginUser"
       ></login>
     </fieldset>
-    <account v-else
+    <account
+      v-else
       :connected-user="connectedUser"
       :is-admin="isAdmin"
       @logout-user="logoutUser"
@@ -61,7 +86,7 @@ const Account = window.httpVueLoader("./components/user/Account.vue");
 module.exports = {
   components: {
     Login,
-    Account
+    Account,
   },
   props: {
     connectedUser: { type: String },
@@ -72,6 +97,8 @@ module.exports = {
 
     isAdmin: { type: Boolean, default: false },
     stream: {},
+
+    suggestions: { type: Array },
   },
   data() {
     return {
@@ -173,5 +200,21 @@ fieldset {
 .infos-table td[scope="row"] {
   padding-right: 0.5em;
   font-weight: bold;
+}
+
+details li {
+  display: flex;
+  height: 18px;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+details .score {
+  background-color: blue;
+  color: white;
+  padding: 0 5px;
+  border-radius: 5px 0 0 5px;
+
+  flex-shrink: 0;
 }
 </style>

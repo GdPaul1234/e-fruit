@@ -344,17 +344,41 @@ router.get("/me", async function (req, res) {
    ============================== GESTION IMAGE  =============================
    =========================================================================== */
 router.post("/classify", async (req, res) => {
-  const imageBase64 = req.body.imageBase64;
+  var imageBase64 = req.body.imageBase64;
+  // validation présence parameters
+  if(!imageBase64) {
+    res.status(400).json({ message: "bad request" });
+  } else {
+    // retirer header
+    imageBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+  }
+
   const now = Number(Date.now()).toString();
   const fileName = `matlab/images/image_${now}.jpg`;
 
-  // sauver image dans un fichier jpg pour Matlab
-  fs.writeFileSync(fileName, imageBase64, { encoding: "base64" });
-  console.log(`${fileName} saved!`);
+  // vérifier si matlab est démarré
+  if (fs.existsSync("matlab/started.status")) {
+    // sauver image dans un fichier jpg pour Matlab
+    fs.writeFileSync(fileName, imageBase64, { encoding: "base64" });
 
-  // classifier image
-
-  res.json({ message: "File saved!" });
+    // vérifier existance résultat
+    var w = fs.watch("matlab/result", (eventType, filename) => {
+      if (filename === `image_${now}.jpg.txt` && eventType === "rename") {
+        // envoyer le contenu du résultat fraichement fourni par Matlab
+        try {
+          const data = fs.readFileSync(`matlab/result/${filename}`);
+          const result = JSON.parse(data);
+          res.json(result);
+        } catch (error) {
+          console.log(error);
+        }
+        // fermer le watcher si on a trouver le fichier à envoyer
+        w.close();
+      }
+    });
+  } else {
+    res.status(503).json([{ message: "Classify service not started!" }]);
+  }
 });
 
 module.exports = router;

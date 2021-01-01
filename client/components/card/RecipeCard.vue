@@ -11,7 +11,7 @@
     <article
       class="article"
       v-for="(recipe, index) in recipes"
-      :key="recipe.id"
+      :key="recipe.id + recipe.title"
       :data-index="index"
     >
       <a :href="`https://fr.wikibooks.org/wiki/${recipe.link}`">
@@ -47,7 +47,9 @@ module.exports = {
       const res1 = await axios.get(
         "http://fr.wikibooks.org/w/api.php?action=query" +
           "&list=search&srsearch=" +
-          encodeURIComponent(`${this.fruit.replace(/ .*/,'')} intitle:"Livre de cuisine/"`) +
+          encodeURIComponent(
+            `${this.fruit.replace(/ .*/, "")} intitle:"Livre de cuisine/"`
+          ) +
           "&origin=*" +
           "&utf8=&format=json"
       );
@@ -60,7 +62,11 @@ module.exports = {
         const recipeName = chapitres.pop(); // Le nom de la recette est le dernier élément du chapitre
         const categorie = await this.getCategorie(title); // catégorie de la recette avec une requête récupérant ces infos
 
-        if (recipeName !== "Ingrédients" && !recipeName.includes("Liste")) {
+        if (
+          recipeName !== "Ingrédients" &&
+          !recipeName.includes("Liste") &&
+          !recipeName.includes("Recettes")
+        ) {
           var recipe = {
             title: recipeName,
             link: title,
@@ -74,7 +80,7 @@ module.exports = {
 
     async getCategorie(link) {
       // fetch categories des pages
-      console.log("Recherche catégorie de "+link+"\n==========")
+      //console.log("Recherche catégorie de "+link+"\n==========")
       const res = await axios.get(
         "http://fr.wikibooks.org/w/api.php?action=query" +
           "&prop=categories" +
@@ -95,16 +101,16 @@ module.exports = {
           categorie.includes("à base") ||
           categorie.includes("Cuisine") ||
           categorie.includes("Recettes") ||
-          categorie.includes("Catégorie")||
+          categorie.includes("Catégorie") ||
           categorie.includes("Page")) &&
         i < categories.length
       ) {
         categorie = categories[i].title.replace("Catégorie:", "");
-        console.log(categorie);
+        //console.log(categorie);
         i++;
       }
 
-      console.log("\nCatégorie choisie: "+categorie+"\n ");
+      //console.log("\nCatégorie choisie: "+categorie+"\n ");
 
       return categorie;
     },
