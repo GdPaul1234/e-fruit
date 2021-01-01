@@ -1,4 +1,8 @@
 <template>
+<div>
+
+  <recipe-view :title="recipeTitle" v-if="show" @close="closePrintPage()"></recipe-view>
+
   <transition-group
     class="recipe-container"
     name="list"
@@ -14,24 +18,31 @@
       :key="recipe.id + recipe.title"
       :data-index="index"
     >
-      <a :href="`https://fr.wikibooks.org/wiki/${recipe.link}`">
+      <button @click="printPage(recipe.link)">
         <span>{{ recipe.title }}</span>
-      </a>
+      </button>
       <span class="categorie" v-if="recipe.categorie !== ''">
         {{ recipe.categorie }}
       </span>
     </article>
   </transition-group>
+
+</div>
 </template>
 
 <script>
+const RecipeView = window.httpVueLoader("./components/card/RecipeView.vue");
+
 module.exports = {
   props: {
     fruit: { type: String, required: true },
   },
+  components: { RecipeView },
   data() {
     return {
       recipes: [],
+      recipeTitle: 'Livre de cuisine/Tarte aux fraises',
+      show: false,
     };
   },
   watch: {
@@ -56,7 +67,9 @@ module.exports = {
       var result = res1.data.query.search;
       this.recipes = [];
 
-      for (let index = 0; index < result.length; index++) {
+      var nbRecipes = 0;
+
+      for (let index = 0; index < result.length && nbRecipes <= 10; index++) {
         const title = result[index]["title"]; // title de l'article retourné pae l'API search de mediawiki
         var chapitres = title.split("/"); // extraction des catégories de la recette
         const recipeName = chapitres.pop(); // Le nom de la recette est le dernier élément du chapitre
@@ -74,6 +87,7 @@ module.exports = {
             id: index,
           };
           this.recipes.push(recipe);
+          nbRecipes++;
         }
       }
     },
@@ -113,6 +127,18 @@ module.exports = {
       //console.log("\nCatégorie choisie: "+categorie+"\n ");
 
       return categorie;
+    },
+
+    /**
+     * Print recette
+     */
+    printPage(title) {
+      this.recipeTitle = title;
+      this.show = true;
+    },
+
+    closePrintPage() {
+      this.show = false;
     },
 
     /**

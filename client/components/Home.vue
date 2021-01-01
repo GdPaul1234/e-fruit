@@ -118,7 +118,7 @@ module.exports = {
 .grid-container {
   display: grid;
   grid-template-columns: 75% 1fr;
-  grid-template-rows: 1fr 1fr auto;
+  grid-template-rows: 1fr auto auto;
   gap: 1em 1em;
   grid-template-areas:
     "article-balance recettes"

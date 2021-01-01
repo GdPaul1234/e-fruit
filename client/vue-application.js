@@ -1,14 +1,8 @@
 const Home = window.httpVueLoader("./components/Home.vue");
-const AdminSettings = window.httpVueLoader(
-  "./components/admin/AdminSettings.vue"
-);
-const UserEditTable = window.httpVueLoader(
-  "./components/admin/UserEditTable.vue"
-);
+const AdminSettings = window.httpVueLoader("./components/admin/AdminSettings.vue");
+const UserEditTable = window.httpVueLoader("./components/admin/UserEditTable.vue");
 const ArticleEdit = window.httpVueLoader("./components/admin/ArticleEdit.vue");
-const ArticleDetail = window.httpVueLoader(
-  "./components/card/ArticleDetail.vue"
-);
+const ArticleDetail = window.httpVueLoader("./components/card/ArticleDetail.vue");
 const Account = window.httpVueLoader("./components/user/Account.vue");
 const PeseeTable = window.httpVueLoader("./components/admin/PeseeTable.vue");
 const AllArticles = window.httpVueLoader("./components/AllArticles.vue");
@@ -21,7 +15,7 @@ const routes = [
   { path: "/p/:id", component: ArticleDetail },
   { path: "/account", component: Account },
   { path: "/pesees", component: PeseeTable },
-  { path: "/correct_suggestion", component: AllArticles },
+  { path: "/correct_suggestion", component: AllArticles }
 ];
 
 const router = new VueRouter({
@@ -250,7 +244,9 @@ var app = new Vue({
           console.log(result);
           // chercher le fruit en top score
           this.articleBalance = this.articles.find((a) =>
-            a.name.toUpperCase().includes(this.suggestionsBalance[0].categorie.toUpperCase())
+            a.name
+              .toUpperCase()
+              .includes(this.suggestionsBalance[0].categorie.toUpperCase())
           );
         } catch (error) {
           this.suggestionsBalance = [
