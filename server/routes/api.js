@@ -16,6 +16,16 @@ const client = new Client({
 client.connect();
 
 /**
+ * Middleware pour autoriser les requêtes CORS (pour le poids)
+ * https://stackoverflow.com/a/40026625
+ */
+router.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+/**
  * Dans ce fichier, vous trouverez des exemples de requêtes GET, POST, PUT et DELETE
  * Ces requêtes concernent l'ajout ou la suppression d'articles sur le site
  *

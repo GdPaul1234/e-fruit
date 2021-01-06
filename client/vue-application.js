@@ -81,7 +81,11 @@ var app = new Vue({
     ===============================================================
     */
     getCorrection(articleId) {
+      // Bloquer la reconnaissance de fruit pour laisser le temps 
+      // au client de prendre son ticket
       this.userCorrectingSuggestion = true;
+      // On se donne 5s pour reprendre la reconnaissance de fruits
+      window.setTimeout(this.unlockClassify, 5000);
 
       console.log("get " + articleId);
       var article = this.articles.find((a) => a.id === articleId);
@@ -95,6 +99,10 @@ var app = new Vue({
       };
 
       console.log(this.articleBalance.name);
+    },
+
+    unlockClassify() {
+      this.userCorrectingSuggestion = false;
     },
 
     /*
