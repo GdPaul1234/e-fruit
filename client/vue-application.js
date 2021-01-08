@@ -257,10 +257,18 @@ var app = new Vue({
               .includes(this.suggestionsBalance[0].categorie.toUpperCase())
           );
         } catch (error) {
-          this.suggestionsBalance = [
-            { message: "Classify service not started!" },
-          ];
-          console.log(error);
+          console.log(error.response);
+          try {
+            this.suggestionsBalance = [
+              { message: error.response.data[0]["message"] },
+            ];
+          } catch (unknownError) {
+            this.suggestionsBalance = [
+              { message: "Erreur inconnue" },
+            ];
+            console.log(error);
+          }
+          
         }
       } else {
         context.fillStyle = "#AAA";

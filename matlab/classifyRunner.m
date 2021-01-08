@@ -38,9 +38,7 @@ while not(isfile("stop.command"))
                 % supprimer l'image car elle ne sert plus à rien
                 delete(fullfilename)
                 
-                % revenir à l'ancien répertoire et création du répertoire
-                % result si inexistant
-                %cd(oldFolder);
+                % Création du répertoire result si inexistant
                 [status, msg] = mkdir('result');
                 if not(status)
                     disp(msg);

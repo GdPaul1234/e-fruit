@@ -377,8 +377,14 @@ router.post("/classify", async (req, res) => {
         // envoyer le contenu du résultat fraichement fourni par Matlab
         try {
           const data = fs.readFileSync(`matlab/result/${filename}`);
-          const result = JSON.parse(data);
-          res.json(result);
+
+          // vérifier si pas erreur execution
+          if(data.includes('ERROR')) {
+            res.status(400).json([{ message: data.toString() }]);
+          } else {
+            const result = JSON.parse(data);
+            res.json(result);
+          }
 
           // supprimer fichier pour nettoyer répertoire result
           fs.unlinkSync(`matlab/result/${filename}`);
