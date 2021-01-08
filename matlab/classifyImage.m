@@ -4,10 +4,12 @@ function [result] = classifyImage(image)
 
 % chargement CNN
 global mynet;
-if isempty(mynet)
-    disp("Chargement CNN dans classifyImage...");
-    mynet = coder.loadDeepLearningNetwork('fruitnet.mat', 'netTransfer');
-end
+
+% C'est la fonction classifyRunner qui se charge de charger le CNN
+% if isempty(mynet)
+%     disp("Chargement CNN dans classifyImage...");
+%     mynet = coder.loadDeepLearningNetwork('fruitnet.mat', 'netTransfer');
+% end
 
 img = imread(image);
 imgresz = imresize(img,[227 227]);
