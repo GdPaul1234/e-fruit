@@ -5,7 +5,7 @@
     <div class="success" v-if="lsuccess">Connexion réussie !</div>
 
     <!-- Formulaire de connexion -->
-    <form class="login" @submit.prevent="loginUser">
+    <form class="mini-login" @submit.prevent="loginUser">
       <div class="field email">
         <label for="email">e-mail</label>
         <input
@@ -77,7 +77,7 @@ h2 {
 }
 
 /* STYLE FORMULAIRE =========================================== */
-.login {
+.mini-login {
   display: grid;
   grid-template-columns: 1fr 1fr auto;
   grid-template-rows: 1fr;

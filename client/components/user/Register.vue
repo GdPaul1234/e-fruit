@@ -7,7 +7,7 @@
     </div>
 
     <!-- Formulaire d'inscription -->
-    <form class="login" @submit.prevent="registerUser">
+    <form class="register" @submit.prevent="registerUser">
       <div class="field email">
         <label for="email">e-mail</label>
         <input
@@ -78,7 +78,7 @@ h2 {
 }
 
 /* STYLE FORMULAIRE =========================================== */
-.login {
+.register {
   display: grid;
   grid-template-columns: 1fr 1fr auto;
   grid-template-rows: 1fr;

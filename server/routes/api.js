@@ -49,7 +49,7 @@ router.use(async (req, res, next) => {
  * Cette route envoie l'intégralité des articles du site
  */
 router.get("/articles", async (req, res) => {
-  const sql = "SELECT * FROM articles";
+  const sql = "SELECT * FROM articles\nORDER BY id ASC";
   const result = await client.query({
     text: sql,
   });

@@ -8,7 +8,8 @@ body {
 }
 
 .bg-image {
-  /* setting bakground image */
+  /* setting bakground image
+  <span>Photo by <a href="https://unsplash.com/@ja_ma?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">ja ma</a> on <a href="https://unsplash.com/s/photos/fruit-market?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span> */
   background-image: url(https://images.unsplash.com/photo-1488459716781-31db52582fe9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80);
   background-repeat: no-repeat;
   background-attachment: fixed;
